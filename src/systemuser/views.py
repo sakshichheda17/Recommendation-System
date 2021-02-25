@@ -18,10 +18,10 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
 
-from resume_parser import resumeparse
+# from resume_parser import resumeparse
 
-data = resumeparse.read_file('/path/to/resume/file')
-print(data)
+# data = resumeparse.read_file('/path/to/resume/file')
+# print(data)
 
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
