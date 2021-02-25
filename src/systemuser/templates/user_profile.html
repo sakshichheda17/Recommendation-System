@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block nav %}
+
+	<a class="nav-item nav-link" href="{% url 'login' %}">Logout</a>
+	
+{% endblock %}
+
+{% block redirect %}
+	<a href="{% url 'user_profile' %}" class="del-msg">&times;</a>
+{% endblock %}
+
+{% block content %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Resume</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user1 in user %}
+            <tr>
+                <td>{{ user1.username }}</td>
+                <td>
+                    <a href = "http://localhost:8000/media/{{ user1.user_resume }}" class="btn btn-primary" target="_blank">View Resume</a>
+                </td>
+            </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+
+{% endblock %}
