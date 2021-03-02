@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from systemuser.views import register,login,user_profile
+from systemuser.views import register,login,user_profile,jobs_rec,courses_rec
 from django.contrib.auth import views as auth_views
 
 from django.conf import settings
@@ -26,6 +26,8 @@ urlpatterns = [
 	path('login/', login ,name='login'),
     path('register/', register,name='register'),      
     path('user_profile/',user_profile,name='user_profile'),
+    path('jobs_rec/',jobs_rec,name='jobs_rec'),
+    path('courses_rec/',courses_rec,name='courses_rec'),
 ]
 
 if settings.DEBUG:

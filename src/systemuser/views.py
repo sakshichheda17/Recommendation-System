@@ -1,3 +1,4 @@
+from io import StringIO
 from django.http import request
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate
@@ -9,9 +10,11 @@ from django.conf import settings
 from django.core.mail import send_mail 
 
 from django.core.files.storage import FileSystemStorage
-from pdfminer.high_level import extract_text
-import docx2txt, nltk, re, requests, spacy
+
+import docx2txt, nltk, re, requests
 from nltk.corpus import stopwords
+
+from pdfminer.high_level import extract_text
 
 import pandas as pd
 import numpy as np
@@ -22,6 +25,12 @@ from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
 
 # data = resumeparse.read_file('/path/to/resume/file')
 # print(data)
+
+from jobs.views import store_jobs
+from courses.views import store_courses
+
+from jobs.models import JobRecommendation
+from courses.models import CourseRecommendation
 
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
@@ -122,30 +131,43 @@ def register(request):
 				print(education_information)
 
 				print("Recommending job for every skill")
-				jobs = set()
-
+				# jobs = set()
+				jobs = dict()
 				# Recommending job for every skill
 				for skill in skills:
-					temp = recommend_jobs(skill)
+					jobs_dict = recommend_jobs(skill)
 					# print(temp)
-					if len(temp) > 0:
-						for i in temp:
-							jobs.update(i)
-				jobs = list(jobs)
-				print(jobs[:10])
+					# if len(temp) > 0:
+					# 	for i in temp:
+					# 		jobs.update(i)
+					for index,job in jobs_dict.items():
+						if len(job) > 0 and index not in jobs.keys():
+							jobs[index] = job
+				# jobs = list(jobs)
+				
+				print(jobs)
+				user = SystemUser.objects.last()
+				# store recommendations in job recommendations model
+				store_jobs(jobs,user)
 
 				print("Recommending course for every skill")
-				courses = set()
+				courses = dict()
 				# Recommending course for every skill
 				for skill in skills:
-					temp = recommend_course(skill)
+					courses_dict = recommend_course(skill)
 					# print(temp)
-					if len(temp)>0:
-						for i in temp:
-							courses.update(i)
-				courses = list(courses)
-				print(courses[:10])
-
+					# if len(temp)>0:
+					# 	for i in temp:
+					# 		courses.update(i)
+					for index,course in courses_dict.items():
+						if len(courses) == 10:
+							break
+						if len(course) > 0 and index not in courses.keys():
+							courses[index] = course
+							
+				# courses = list(courses)
+				print(courses)
+				store_courses(courses,user)
 				#email_from = settings.EMAIL_HOST_USER 
 				#recipient_list = [email] 
 				#send_mail( subject, message, email_from, recipient_list ) 
@@ -281,7 +303,11 @@ def recommend_jobs(skill):
 	# print(titles.iloc[job_indices][:10])
 	jobs = titles.iloc[job_indices][:10]
 	# print(jobs)
-	return jobs.values.tolist()
+
+	jobs  = jobs.values.tolist()
+	jobs_dict = {k:v for (k,v) in zip(job_indices, jobs)}
+	
+	return jobs_dict
 
 
 def recommend_course(skill):
@@ -306,6 +332,49 @@ def recommend_course(skill):
 	# print(titles.iloc[course_indices][:10])
 	courses = titles.iloc[course_indices][:10]
 	# print(courses)
-	return courses.values.tolist()
+	courses = courses.values.tolist()
+	courses_dict = {k:v for (k,v) in zip(course_indices, courses)}
+	
+	return courses_dict
 	
 
+def jobs_rec(request):
+	user_name = request.session['user_id']
+	user = SystemUser.objects.get(username=user_name)
+	
+	jobs = JobRecommendation.objects.filter(user=user)
+	indices = [job.job_index for job in jobs]
+
+	df = pd.read_csv('media/naukridataset.csv')
+	df2 = df.head(50)
+
+	#fetch job details using job index
+	details = df2[['Job Title', 'Key Skills', 'Role Category', 'Location',
+       'Functional Area', 'Industry', 'Role']].iloc[indices].to_dict(orient='list')
+	
+	job_titles = list(details.keys())
+	
+	job_details = list(zip(*details.values()))
+	print(job_details)
+	
+	context={'job_titles':job_titles, 'job_details':job_details}
+	
+	return render(request,'jobs_rec.html',context)
+
+def courses_rec(request):
+	user_name = request.session['user_id']
+	user = SystemUser.objects.get(username=user_name)
+
+	courses = CourseRecommendation.objects.filter(user=user)
+	indices = [course.course_index for course in courses]
+	df = pd.read_csv('media/coursera_data.csv')
+	details = df.iloc[indices].to_dict(orient='list')
+	course_titles = list(details.keys())
+	course_titles = [x.replace('_',' ') for x in course_titles]
+	course_details = list(zip(*details.values()))
+	print('\n'+str(len(course_details)))
+	for course in course_details:
+		print(course)
+	context = {'course_titles':course_titles, 'course_details':course_details}
+
+	return render(request,'courses_rec.html',context)

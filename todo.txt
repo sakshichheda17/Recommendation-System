@@ -1,0 +1,5 @@
+[X] Store jobs in JobRecommendation model
+[X] Store courses in CourseRecommendation model
+[X] Display in frontend
+[] Store user info in user table
+[] User profile page
