@@ -2,7 +2,7 @@ from io import StringIO
 from django.http import request
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate
-from .forms import UserCreationForm, UserLoginForm
+from .forms import UserCreationForm, UserLoginForm,UserDetailsForm
 from django.contrib import messages
 from .models import SystemUser
 
@@ -86,7 +86,7 @@ def register(request):
 
 		if form.is_valid():
 			username = form.cleaned_data.get('username')
-			email = form.cleaned_data.get('email')
+			# email = form.cleaned_data.get('email')
 			
 			if SystemUser.objects.filter(username=form.cleaned_data['username']).exists():
 				# print('Already exists')
@@ -108,70 +108,10 @@ def register(request):
 				resume_url = url.replace("%20"," ")
 				resume_url = resume_url[1:]
 				resume_url = resume_url.replace("\ ","/")
-				# Checking file extension and extracting text
-				if resume_url.lower().endswith(('.pdf')):
-					content = extract_text_from_pdf(resume_url)
-				elif resume_url.lower().endswith(('.docx')):
-					content = extract_text_from_docx(resume_url)
-				# Extracting names
-				names = extract_names(content)
-				print(names[0])
-				# Extracting phone number
-				phone_number = extract_phone_number(content)
-				print(phone_number)
-				# Extracting email
-				emails = extract_emails(content)
-				print(emails)
-				# Extracting skills
-				skills = extract_skills(content)
-				print(skills)
-				
-				# Extracting education
-				education_information = extract_education(content)
-				print(education_information)
 
-				print("Recommending job for every skill")
-				# jobs = set()
-				jobs = dict()
-				# Recommending job for every skill
-				for skill in skills:
-					jobs_dict = recommend_jobs(skill)
-					# print(temp)
-					# if len(temp) > 0:
-					# 	for i in temp:
-					# 		jobs.update(i)
-					for index,job in jobs_dict.items():
-						if len(job) > 0 and index not in jobs.keys():
-							jobs[index] = job
-				# jobs = list(jobs)
-				
-				print(jobs)
-				user = SystemUser.objects.last()
-				# store recommendations in job recommendations model
-				store_jobs(jobs,user)
+				# Extracting
+				extraction(username,resume_url)
 
-				print("Recommending course for every skill")
-				courses = dict()
-				# Recommending course for every skill
-				for skill in skills:
-					courses_dict = recommend_course(skill)
-					# print(temp)
-					# if len(temp)>0:
-					# 	for i in temp:
-					# 		courses.update(i)
-					for index,course in courses_dict.items():
-						if len(courses) == 10:
-							break
-						if len(course) > 0 and index not in courses.keys():
-							courses[index] = course
-							
-				# courses = list(courses)
-				print(courses)
-				store_courses(courses,user)
-				#email_from = settings.EMAIL_HOST_USER 
-				#recipient_list = [email] 
-				#send_mail( subject, message, email_from, recipient_list ) 
-				
 				return redirect('login')			    
 			
 	else:
@@ -182,12 +122,121 @@ def register(request):
 
 
 
+def extraction(username,resume_url):
+	# Checking file extension and extracting text
+	if resume_url.lower().endswith(('.pdf')):
+		content = extract_text_from_pdf(resume_url)
+	elif resume_url.lower().endswith(('.docx')):
+		content = extract_text_from_docx(resume_url)
+	# Extracting names
+	# names = extract_names(content)
+	# print(names[0])
+	# Extracting phone number
+	phone_number = extract_phone_number(content)
+	# print(phone_number)
+	# Extracting email
+	emails = extract_emails(content)
+	# print(emails)
+	# Extracting skills
+	skills = extract_skills(content)
+	# print(skills)
+	
+	# Extracting education
+	education_information = extract_education(content)
+	# print(education_information)
+
+	# print("Recommending job for every skill")
+	# jobs = set()
+	jobs = dict()
+	# Recommending job for every skill
+	for skill in skills:
+		jobs_dict = recommend_jobs(skill)
+		# print(temp)
+		# if len(temp) > 0:
+		# 	for i in temp:
+		# 		jobs.update(i)
+		for index,job in jobs_dict.items():
+			if len(job) > 0 and index not in jobs.keys():
+				jobs[index] = job
+	# jobs = list(jobs)
+	
+	# print(jobs)
+	user = SystemUser.objects.last()
+	# store recommendations in job recommendations model
+	store_jobs(jobs,user)
+
+	# print("Recommending course for every skill")
+	courses = dict()
+	# Recommending course for every skill
+	for skill in skills:
+		courses_dict = recommend_course(skill)
+		# print(temp)
+		# if len(temp)>0:
+		# 	for i in temp:
+		# 		courses.update(i)
+		for index,course in courses_dict.items():
+			if len(courses) == 10:
+				break
+			if len(course) > 0 and index not in courses.keys():
+				courses[index] = course
+				
+	# courses = list(courses)
+	# print(courses)
+	store_courses(courses,user)
+
+	skill_list = list()
+	for skill in skills:
+		skill_list.append(skill)
+
+	education_list = list()
+	for edu in education_information:
+		education_list.append(edu)
+
+	user = SystemUser.objects.get(username=username)
+	# print(user)
+	user.email = emails[0]
+	user.skills = skill_list
+	user.phone_number = phone_number
+	user.education = education_list
+	user.save()
+
 def user_profile(request):
-    user_name = request.session['user_id']
-    #print(user_name)
-    user = SystemUser.objects.filter(username=user_name)
-    context={'user':user}
-    return render(request, 'user_profile.html',context)
+	username = request.session['user_id']
+	user = SystemUser.objects.get(username=username)
+	context = {'user':user}
+	resume = user.user_resume
+	if request.method == "POST": 
+		form = UserDetailsForm(request.POST, instance = user) 
+		context['form'] = form
+		if form.is_valid():
+			# new_reume = form.cleaned_data.get('user_resume')
+			# new_reume = request.POST.get('user_resume')
+			# if resume != new_reume:
+			# 	fs = FileSystemStorage()
+			# 	url = fs.url(resume)
+			# 	print("URL",url)
+			# 	# Deleting old Resume
+			# 	if os.path.isfile(url):
+			# 		os.remove(url)
+			# 	# Uploading Resume
+			# 	uploaded_resume = request.FILES['user_resume']
+			# 	name = fs.save(uploaded_resume.name,uploaded_resume)
+			# 	# Extracting url of the uploaded pdf
+			# 	url = fs.url(name)
+			# 	resume_url = url.replace("%20"," ")
+			# 	resume_url = resume_url[1:]
+			# 	resume_url = resume_url.replace("\ ","/")
+				# extraction(username,new_reume)
+
+			form.save()
+			messages.success(request, f'Your details were edited successfully.')
+			return redirect("user_profile") 
+		else:
+			print(form.errors)
+	# else:
+	# 	form = UserDetailsForm()
+
+	return render(request,"user_profile.html",context)
 
 
 def extract_text_from_pdf(pdf_path):

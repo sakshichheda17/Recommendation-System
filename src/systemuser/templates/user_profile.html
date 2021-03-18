@@ -3,7 +3,8 @@
 
 
 {% block nav %}
-
+    <a class="nav-item nav-link" href="{% url 'jobs_rec' %}">Jobs</a>
+    <a class="nav-item nav-link" href="{% url 'courses_rec' %}">Courses</a>
 	<a class="nav-item nav-link" href="{% url 'login' %}">Logout</a>
 	
 {% endblock %}
@@ -13,24 +14,82 @@
 {% endblock %}
 
 {% block content %}
-<table class="table">
-    <thead>
-        <tr>
-            <th>Username</th>
-            <th>Resume</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for user1 in user %}
-            <tr>
-                <td>{{ user1.username }}</td>
-                <td>
-                    <a href = "http://localhost:8000/media/{{ user1.user_resume }}" class="btn btn-primary" target="_blank">View Resume</a>
-                </td>
-            </tr>
-        {% endfor %}
+	
+<div class="content-section">
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Your Details</legend>
 
-    </tbody>
-</table>
+            <div class="form-group row">  
+                <label class="col-sm-2 col-form-label">Username</label>  
+                <div class="col-sm-5">   
+                   <input type="text" class="form-control" name="username" value="{{user.username}}">
+                </div>  
+            </div>
+            <div class="form-group row">  
+                <label class="col-sm-2 col-form-label">Email</label>   
+                <div class="col-sm-5">   
+                   <input type="text" class="form-control" name="email" value="{{user.email}}">
+                </div>
+            </div>
+            <div class="form-group row">  
+                <label class="col-sm-2 col-form-label">Phone number</label>   
+                <div class="col-sm-5">   
+                   <input type="text" class="form-control" name="phone_number" value="{{user.phone_number}}">
+                </div>
+            </div>
+            <div class="form-group row">  
+                <label class="col-sm-2 col-form-label">Current Resume</label>
+                <div class="col-sm-5">   
+                   <input type="text" class="form-control" value="{{user.user_resume}}">
+                </div>
+            </div>
+            <!-- <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Change Resume</label>
+                <div class="col-sm-5">   
+                    <input type="file" class="form-control" name="user_resume">
+                </div>
+            </div> -->
+            <div class="form-group row">  
+                <label class="col-sm-2 col-form-label">Education</label>
+                <div class="col-sm-5">   
+
+                   <input type="text" class="form-control" name="education" value="{{user.education}}">
+                </div>
+            </div>
+            <div class="form-group row">  
+                <label class="col-sm-2 col-form-label">Skills</label>
+                <div class="col-sm-5">   
+
+                   <input type="text" class="form-control" name="skills" value="{{user.skills}}">
+                </div>
+            </div>
+
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-outline-info" type="sumbit">Edit Profile</button>
+            <a href = "http://localhost:8000/media/{{ user.user_resume }}" class="btn btn-outline-info" target="_blank" style="margin-left: 30px;">View Resume</a>
+        </div>
+    </form>
+</div>
+
+
+<div class='form-group'>
+    {% if form.errors %}
+      {% for field in form %}
+          {% for error in field.errors %}
+              <div class="alert alert-danger">
+                  <strong>{{ error|escape }}</strong>
+              </div>
+          {% endfor %}
+      {% endfor %}
+      {% for error in form.non_field_errors %}
+          <div class="alert alert-danger">
+              <strong>{{ error|escape }}</strong>
+          </div>
+      {% endfor %}
+  {% endif %}
+</div>
 
 {% endblock %}

@@ -8,7 +8,6 @@ class UserCreationForm(forms.ModelForm):
         fields = [
         			'username',
         			'password',
-        			'email',
         			'user_resume'
         	]
         widgets = {
@@ -26,3 +25,15 @@ class UserLoginForm(forms.ModelForm):
         widgets = {
             'password': forms.PasswordInput(),
             }
+
+
+class UserDetailsForm(forms.ModelForm):
+    class Meta:
+        model = SystemUser
+        fields = [
+                    'username',
+                    'email',
+                    'phone_number',
+                    'education',
+                    'skills'
+                ]
