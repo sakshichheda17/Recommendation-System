@@ -16,7 +16,7 @@
 {% block content %}
 	
 <div class="content-section">
-    <form method="POST">
+    <form method="POST" action="" enctype="multipart/form-data">
         {% csrf_token %}
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Your Details</legend>
@@ -39,36 +39,40 @@
                    <input type="text" class="form-control" name="phone_number" value="{{user.phone_number}}">
                 </div>
             </div>
-            <div class="form-group row">  
-                <label class="col-sm-2 col-form-label">Current Resume</label>
-                <div class="col-sm-5">   
-                   <input type="text" class="form-control" value="{{user.user_resume}}">
-                </div>
-            </div>
-            <!-- <div class="form-group row">
+
+            <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Change Resume</label>
                 <div class="col-sm-5">   
                     <input type="file" class="form-control" name="user_resume">
                 </div>
-            </div> -->
+            </div>
             <div class="form-group row">  
                 <label class="col-sm-2 col-form-label">Education</label>
-                <div class="col-sm-5">   
-
-                   <input type="text" class="form-control" name="education" value="{{user.education}}">
-                </div>
+                <input type="text" class="form-control" name="education" value="{{user.education}}">
             </div>
-            <div class="form-group row">  
+            <!-- <div class="form-group row">  
+                    {% for edu in education %}
+                    <div class="col-sm-6">   
+                        <input type="text" class="form-control" name="education" value="{{edu}}">
+                    </div>
+                    {% endfor %}
+            </div> -->
+            
+            <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Skills</label>
-                <div class="col-sm-5">   
-
-                   <input type="text" class="form-control" name="skills" value="{{user.skills}}">
-                </div>
+                <input type="text" class="form-control" name="skills" value="{{user.skills}}">
             </div>
+            <!-- <div class="form-group row">  
+                {% for skill in skills %}
+                <div class="col-sm-3">   
+                   <input type="text" class="form-control" name="skills" value="{{skill}}">
+                </div>
+                {% endfor %}
+            </div> -->
 
         </fieldset>
         <div class="form-group">
-            <button class="btn btn-outline-info" type="sumbit">Edit Profile</button>
+            <button class="btn btn-outline-info" type="sumbit">Save Changes</button>
             <a href = "http://localhost:8000/media/{{ user.user_resume }}" class="btn btn-outline-info" target="_blank" style="margin-left: 30px;">View Resume</a>
         </div>
     </form>

@@ -126,7 +126,7 @@ def extraction(username,resume_url):
 	# Checking file extension and extracting text
 	if resume_url.lower().endswith(('.pdf')):
 		content = extract_text_from_pdf(resume_url)
-	elif resume_url.lower().endswith(('.docx')):
+	elif resume_url.lower().endswith(('.docx')) or resume_url.lower().endswith(('.doc')):
 		content = extract_text_from_docx(resume_url)
 	# Extracting names
 	# names = extract_names(content)
@@ -160,12 +160,12 @@ def extraction(username,resume_url):
 				jobs[index] = job
 	# jobs = list(jobs)
 	
-	# print(jobs)
+	print(jobs)
 	user = SystemUser.objects.last()
 	# store recommendations in job recommendations model
 	store_jobs(jobs,user)
 
-	# print("Recommending course for every skill")
+	print("Recommending course for every skill")
 	courses = dict()
 	# Recommending course for every skill
 	for skill in skills:
@@ -181,7 +181,7 @@ def extraction(username,resume_url):
 				courses[index] = course
 				
 	# courses = list(courses)
-	# print(courses)
+	print(courses)
 	store_courses(courses,user)
 
 	skill_list = list()
@@ -204,39 +204,50 @@ def user_profile(request):
 	username = request.session['user_id']
 	user = SystemUser.objects.get(username=username)
 	context = {'user':user}
-	resume = user.user_resume
+	# if user.skills:
+	# 	skills = user.skills
+	# 	context['skills'] = list(skills.split(","))
+
 	if request.method == "POST": 
-		form = UserDetailsForm(request.POST, instance = user) 
+		form = UserDetailsForm(request.POST, request.FILES, instance = user) 
 		context['form'] = form
 		if form.is_valid():
-			# new_reume = form.cleaned_data.get('user_resume')
-			# new_reume = request.POST.get('user_resume')
-			# if resume != new_reume:
-			# 	fs = FileSystemStorage()
-			# 	url = fs.url(resume)
-			# 	print("URL",url)
-			# 	# Deleting old Resume
-			# 	if os.path.isfile(url):
-			# 		os.remove(url)
-			# 	# Uploading Resume
-			# 	uploaded_resume = request.FILES['user_resume']
-			# 	name = fs.save(uploaded_resume.name,uploaded_resume)
-			# 	# Extracting url of the uploaded pdf
-			# 	url = fs.url(name)
-			# 	resume_url = url.replace("%20"," ")
-			# 	resume_url = resume_url[1:]
-			# 	resume_url = resume_url.replace("\ ","/")
-				# extraction(username,new_reume)
-
 			form.save()
+			# Returns false if no new resume is uploaded
+			new_resume = request.FILES.get('user_resume', False)
+			
+			# When new resume is uploaded
+			if new_resume!= False:
+			# new_reume = request.POST.get('user_resume')
+				print("New resume",new_resume)
+				fs = FileSystemStorage()
+				url = fs.url(new_resume)
+				# print("Before URL",url)
+				# Deleting old Resume
+				user.user_resume.delete()
+				# Uploading Resume
+				uploaded_resume = request.FILES['user_resume']
+				# print("Uploading")
+				name = fs.save(uploaded_resume.name,uploaded_resume)
+				user.user_resume = name
+				user.save()
+				# print("Uploaded")
+				# Extracting url of the uploaded pdf
+				url = fs.url(name)
+				# print("Uploaded URL",url)
+				resume_url = url.replace("%20"," ")
+				resume_url = resume_url[1:]
+				resume_url = resume_url.replace("\ ","/")
+				extraction(username,resume_url)
+
+			
 			messages.success(request, f'Your details were edited successfully.')
 			return redirect("user_profile") 
 		else:
 			print(form.errors)
-	# else:
-	# 	form = UserDetailsForm()
 
 	return render(request,"user_profile.html",context)
+
 
 
 def extract_text_from_pdf(pdf_path):
@@ -404,7 +415,7 @@ def jobs_rec(request):
 	job_titles = list(details.keys())
 	
 	job_details = list(zip(*details.values()))
-	print(job_details)
+	# print(job_details)
 	
 	context={'job_titles':job_titles, 'job_details':job_details}
 	
@@ -421,9 +432,9 @@ def courses_rec(request):
 	course_titles = list(details.keys())
 	course_titles = [x.replace('_',' ') for x in course_titles]
 	course_details = list(zip(*details.values()))
-	print('\n'+str(len(course_details)))
-	for course in course_details:
-		print(course)
+	# print('\n'+str(len(course_details)))
+	# for course in course_details:
+		# print(course)
 	context = {'course_titles':course_titles, 'course_details':course_details}
 
 	return render(request,'courses_rec.html',context)
