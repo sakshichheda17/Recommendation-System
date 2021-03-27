@@ -23,7 +23,7 @@ def get_applied_jobs(request):
         if 'Rejected' in form_data.values():
             job_index = list(form_data.keys())[list(form_data.values()).index('Rejected')]
             change_job = JobRecommendation.objects.filter(user=user).get(job_index=job_index)
-            change_job.not_interested = True
+            change_job.rejected = True
             change_job.save()
         elif 'Selected' in form_data.values():
             job_index = list(form_data.keys())[list(form_data.values()).index('Selected')]
@@ -34,7 +34,7 @@ def get_applied_jobs(request):
     #  get all job rec for this user
     jobs = JobRecommendation.objects.filter(user=user)
     # filter jobs which the user has applied for and not yet selected
-    jobs = jobs.filter(not_interested=False).filter(applied=True).filter(selected=False)
+    jobs = jobs.filter(applied=True).filter(rejected=False).filter(selected=False)
     # get indices of these jobs
     indices = [job.job_index for job in jobs]
 

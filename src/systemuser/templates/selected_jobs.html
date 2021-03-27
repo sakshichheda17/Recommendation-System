@@ -5,24 +5,28 @@
 	<a href="{% url 'jobs_rec' %}">Recommendations</a>
     <a href="{% url 'applied_jobs' %}">Applied</a>
     <h3>Selected for Jobs</h3>
-    <table class="table">
-    {% for card in job_details %}
-        <tr>
-        <td>
-        <p>{{ column_names.0 }}: {{ card.0 }}</p>
-        <p>{{ column_names.1 }}: {{ card.1 }}</p>
-        <p>{{ column_names.2 }}: {{ card.2 }}</p>
-        <p>{{ column_names.3 }}: {{ card.3 }}</p>
-        </td>
-        <td>
-        <p>{{ column_names.4 }}: {{ card.4 }}</p>
-        <p>{{ column_names.5 }}: {{ card.5 }}</p>
-        <p>{{ column_names.6 }}: {{ card.6 }}</p>
-        <p>{{ column_names.7 }}: {{ card.7 }}</p>
-        </td>
-        </tr> 
-    {% endfor %}
-    </table>
+    {% if job_details %}
+        <table class="table">
+        {% for card in job_details %}
+            <tr>
+            <td>
+            <p>{{ column_names.0 }}: {{ card.0 }}</p>
+            <p>{{ column_names.1 }}: {{ card.1 }}</p>
+            <p>{{ column_names.2 }}: {{ card.2 }}</p>
+            <p>{{ column_names.3 }}: {{ card.3 }}</p>
+            </td>
+            <td>
+            <p>{{ column_names.4 }}: {{ card.4 }}</p>
+            <p>{{ column_names.5 }}: {{ card.5 }}</p>
+            <p>{{ column_names.6 }}: {{ card.6 }}</p>
+            <p>{{ column_names.7 }}: {{ card.7 }}</p>
+            </td>
+            </tr> 
+        {% endfor %}
+        </table>
+    {% else %}
+        Nothing to show here.
+    {% endif %}
 </div>
 {% endblock %}
 {% block nav %}

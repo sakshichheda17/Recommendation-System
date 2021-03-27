@@ -32,11 +32,11 @@ from courses.views import store_courses
 from jobs.models import JobRecommendation
 from courses.models import CourseRecommendation
 
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger')
-nltk.download('maxent_ne_chunker')
-nltk.download('words')
-nltk.download('stopwords')
+# nltk.download('punkt')
+# nltk.download('averaged_perceptron_tagger')
+# nltk.download('maxent_ne_chunker')
+# nltk.download('words')
+# nltk.download('stopwords')
 
 PHONE_REG = re.compile(r'[\+\(]?[1-9][0-9 .\-\(\)]{8,}[0-9]')
 EMAIL_REG = re.compile(r'[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+')
@@ -110,7 +110,7 @@ def register(request):
 				resume_url = resume_url.replace("\ ","/")
 
 				# Extracting
-				extraction(username,resume_url)
+				extraction(False,username,resume_url)
 
 				return redirect('login')			    
 			
@@ -122,7 +122,7 @@ def register(request):
 
 
 
-def extraction(username,resume_url):
+def extraction(remove_flag,username,resume_url):
 	# Checking file extension and extracting text
 	if resume_url.lower().endswith(('.pdf')):
 		content = extract_text_from_pdf(resume_url)
@@ -161,7 +161,10 @@ def extraction(username,resume_url):
 	# jobs = list(jobs)
 	
 	print(jobs)
-	user = SystemUser.objects.last()
+	user = SystemUser.objects.get(username=username)
+	if remove_flag == True:
+		JobRecommendation.objects.filter(user=user).delete()
+
 	# store recommendations in job recommendations model
 	store_jobs(jobs,user)
 
@@ -182,6 +185,8 @@ def extraction(username,resume_url):
 				
 	# courses = list(courses)
 	print(courses)
+	if remove_flag == True:
+		CourseRecommendation.objects.filter(user=user).delete()
 	store_courses(courses,user)
 
 	skill_list = list()
@@ -192,7 +197,7 @@ def extraction(username,resume_url):
 	for edu in education_information:
 		education_list.append(edu)
 
-	user = SystemUser.objects.get(username=username)
+	# user = SystemUser.objects.get(username=username)
 	# print(user)
 	user.email = emails[0]
 	user.skills = skill_list
@@ -238,7 +243,7 @@ def user_profile(request):
 				resume_url = url.replace("%20"," ")
 				resume_url = resume_url[1:]
 				resume_url = resume_url.replace("\ ","/")
-				extraction(username,resume_url)
+				extraction(True,username,resume_url)
 
 			
 			messages.success(request, f'Your details were edited successfully.')
@@ -439,9 +444,9 @@ def jobs_rec(request):
 	#  insert index in job details
 	for i in range(len(indices)):
 		job_details[i].insert(0,indices[i])
-	job_titles = list(details.keys())
+	# job_titles = list(details.keys())
 	
-	job_details = list(zip(*details.values()))
+	# job_details = list(zip(*details.values()))
 	# print(job_details)
 	
 	# show first ten
@@ -495,12 +500,12 @@ def courses_rec(request):
 	# for course in course_details:
 	# 	print(course)
 	context = {'column_names':column_names, 'course_details':course_details}
-	course_titles = list(details.keys())
-	course_titles = [x.replace('_',' ') for x in course_titles]
-	course_details = list(zip(*details.values()))
+	# course_titles = list(details.keys())
+	# course_titles = [x.replace('_',' ') for x in course_titles]
+	# course_details = list(zip(*details.values()))
 	# print('\n'+str(len(course_details)))
 	# for course in course_details:
 		# print(course)
-	context = {'course_titles':course_titles, 'course_details':course_details}
+	# context = {'course_titles':course_titles, 'course_details':course_details}
 
 	return render(request,'courses_rec.html',context)

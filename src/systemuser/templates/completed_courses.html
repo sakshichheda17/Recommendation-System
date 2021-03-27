@@ -5,25 +5,28 @@
     <a href="{% url 'courses_rec' %}">Recommendations</a>
     <a href="{% url 'enrolled_courses' %}">Enrolled</a>
     <h3>Completed Courses</h3>
-    {{ card }}
-    <table class="table">
-    {% for card in course_details %}
-        <tr>
-        <td>
-        <p>{{ column_names.0 }}: {{ card.0 }}</p>
-        <p>{{ column_names.1 }}: {{ card.1 }}</p>
-        <p>{{ column_names.2 }}: {{ card.2 }}</p>
-        <p>{{ column_names.3 }}: {{ card.3 }}</p>
-        <p></p>
-        </td>
-        <td>
-        <p>{{ column_names.4 }}: {{ card.4 }}</p>
-        <p>{{ column_names.5 }}: {{ card.5 }}</p>
-        <p>{{ column_names.6 }}: {{ card.6 }}</p>
-        </td>
-        </tr>   
-    {% endfor %}
-    </table>
+    {% if course_details %}
+        <table class="table">
+        {% for card in course_details %}
+            <tr>
+            <td>
+            <p>{{ column_names.0 }}: {{ card.0 }}</p>
+            <p>{{ column_names.1 }}: {{ card.1 }}</p>
+            <p>{{ column_names.2 }}: {{ card.2 }}</p>
+            <p>{{ column_names.3 }}: {{ card.3 }}</p>
+            <p></p>
+            </td>
+            <td>
+            <p>{{ column_names.4 }}: {{ card.4 }}</p>
+            <p>{{ column_names.5 }}: {{ card.5 }}</p>
+            <p>{{ column_names.6 }}: {{ card.6 }}</p>
+            </td>
+            </tr>   
+        {% endfor %}
+        </table>
+    {% else %}
+        Nothing to show here.
+    {% endif %}
 </div>
 {% endblock %}
 {% block nav %}

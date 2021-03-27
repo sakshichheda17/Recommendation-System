@@ -5,6 +5,7 @@
 	<a href="{% url 'jobs_rec' %}">Recommendations</a>
     <a href="{% url 'selected_jobs' %}">Selected</a>
     <h3>Applied for Jobs</h3>
+    {% if job_details %}
     <table class="table">
     {% for card in job_details %}
         <form method="POST">
@@ -27,7 +28,9 @@
         </tr> 
         </form>  
     {% endfor %}
-    
+    {% else %}
+        Nothing to show here.
+    {% endif %}
     </table>
 </div>
 {% endblock %}

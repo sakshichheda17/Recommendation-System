@@ -5,7 +5,7 @@
     <a href="{% url 'courses_rec' %}">Recommendations</a>
     <a href="{% url 'completed_courses' %}">Completed</a>
     <h3>Enrolled Courses</h3>
-    {{ card }}
+    {% if course_details %}
     <table class="table">
     {% for card in course_details %}
         <form method="POST">
@@ -29,6 +29,9 @@
         </form>  
     {% endfor %}
     </table>
+    {% else %}
+        Nothing to show here.
+    {% endif %}
 </div>
 {% endblock %}
 {% block nav %}
