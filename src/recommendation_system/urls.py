@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from systemuser.views import register,login,user_profile,jobs_rec,courses_rec
+from jobs.views import get_applied_jobs,get_selected_jobs
+from courses.views import get_enrolled_courses,get_completed_courses
 from django.contrib.auth import views as auth_views
 
 from django.conf import settings
@@ -28,6 +30,10 @@ urlpatterns = [
     path('user_profile/',user_profile,name='user_profile'),
     path('jobs_rec/',jobs_rec,name='jobs_rec'),
     path('courses_rec/',courses_rec,name='courses_rec'),
+    path('applied_jobs/',get_applied_jobs,name='applied_jobs'),
+    path('selected_jobs/',get_selected_jobs,name='selected_jobs'),
+    path('enrolled_courses/',get_enrolled_courses,name='enrolled_courses'),
+    path('completed_courses/',get_completed_courses,name='completed_courses'),
 ]
 
 if settings.DEBUG:

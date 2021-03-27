@@ -3,3 +3,7 @@
 [X] Display in frontend
 [] Store user info in user table
 [] User profile page
+
+shell commands to make all not_interested False:
+jobs = JobRecommendation.objects.filter(user=26)
+jobs = jobs.update(not_interested=False)

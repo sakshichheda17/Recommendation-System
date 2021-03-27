@@ -14,3 +14,6 @@ class SystemUser(models.Model):
 	# def delete(self,*args,**kwargs):
 	# 	self.user_resume.delete()
 	# 	super().delete(*args,**kwargs)
+
+	def __str__(self):
+         return self.username

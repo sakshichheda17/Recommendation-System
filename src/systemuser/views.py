@@ -388,25 +388,56 @@ def recommend_course(skill):
 	
 
 def jobs_rec(request):
+	# print(request.user)
 	user_name = request.session['user_id']
 	user = SystemUser.objects.get(username=user_name)
+	if request.method == 'POST':
+		
+		form_data = request.POST
+		print(form_data)
+		if 'Not Interested' in form_data.values():
+			job_index = list(form_data.keys())[list(form_data.values()).index('Not Interested')]
+			change_job = JobRecommendation.objects.filter(user=user).get(job_index=job_index)
+			change_job.not_interested = True
+			change_job.save()
+		elif 'Applied' in form_data.values():
+			job_index = list(form_data.keys())[list(form_data.values()).index('Applied')]
+			change_job = JobRecommendation.objects.filter(user=user).get(job_index=job_index)
+			change_job.applied = True
+			change_job.save()
 	
+	#  get all job rec for this user
 	jobs = JobRecommendation.objects.filter(user=user)
+	# filter jobs which the user has NOT marked as not interested or applied
+	jobs = jobs.filter(not_interested=False).filter(applied=False)
+	# get indices of these jobs
 	indices = [job.job_index for job in jobs]
-
+	
 	df = pd.read_csv('media/naukridataset.csv')
 	df2 = df.head(50)
 
 	#fetch job details using job index
 	details = df2[['Job Title', 'Key Skills', 'Role Category', 'Location',
        'Functional Area', 'Industry', 'Role']].iloc[indices].to_dict(orient='list')
+
+	# get name of the columns for printing
+	column_names = list(details.keys())
+	column_names.insert(0,'Index')
 	
-	job_titles = list(details.keys())
+	job_details = [list(a) for a in zip(*details.values())]
+	#  insert index in job details
+	for i in range(len(indices)):
+		job_details[i].insert(0,indices[i])
 	
-	job_details = list(zip(*details.values()))
-	print(job_details)
-	
-	context={'job_titles':job_titles, 'job_details':job_details}
+	# show first ten
+	if len(job_details) > 10:
+		job_details = job_details[:10]
+		indices = indices[:10]
+	# print(indices)
+	# else:
+	#  generate new recommendations
+
+	context={'indices': indices,'column_names':column_names, 'job_details':job_details}
 	
 	return render(request,'jobs_rec.html',context)
 
@@ -414,16 +445,40 @@ def courses_rec(request):
 	user_name = request.session['user_id']
 	user = SystemUser.objects.get(username=user_name)
 
+	if request.method == 'POST':
+		form_data = request.POST
+		print(form_data)
+		if 'Not Interested' in form_data.values():
+			course_index = list(form_data.keys())[list(form_data.values()).index('Not Interested')]
+			change_course = CourseRecommendation.objects.filter(user=user).get(course_index=course_index)
+			change_course.not_interested = True
+			change_course.save()
+		elif 'Enrolled' in form_data.values():
+			course_index = list(form_data.keys())[list(form_data.values()).index('Enrolled')]
+			change_course = CourseRecommendation.objects.filter(user=user).get(course_index=course_index)
+			change_course.enrolled = True
+			change_course.save()
+		
 	courses = CourseRecommendation.objects.filter(user=user)
+	courses = courses.filter(not_interested=False).filter(enrolled=False)
 	indices = [course.course_index for course in courses]
+
 	df = pd.read_csv('media/coursera_data.csv')
 	details = df.iloc[indices].to_dict(orient='list')
-	course_titles = list(details.keys())
-	course_titles = [x.replace('_',' ') for x in course_titles]
-	course_details = list(zip(*details.values()))
-	print('\n'+str(len(course_details)))
-	for course in course_details:
-		print(course)
-	context = {'course_titles':course_titles, 'course_details':course_details}
+
+	column_names = list(details.keys())
+	column_names = [x.replace('_',' ') for x in column_names]
+	column_names.pop(0)
+	column_names.insert(0,'Index')
+	print(indices)
+
+	# column_names.insert(0,'Index')
+
+	course_details = [list(a)[1:] for a in zip(*details.values())]
+	for i in range(len(indices)):
+		course_details[i].insert(0,indices[i])
+	# for course in course_details:
+	# 	print(course)
+	context = {'column_names':column_names, 'course_details':course_details}
 
 	return render(request,'courses_rec.html',context)

@@ -2,13 +2,11 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <div>
+	<a href="{% url 'jobs_rec' %}">Recommendations</a>
     <a href="{% url 'applied_jobs' %}">Applied</a>
-    <a href="{% url 'selected_jobs' %}">Selected</a>
-    <h3>Job Recommendations</h3>
+    <h3>Selected for Jobs</h3>
     <table class="table">
     {% for card in job_details %}
-        <form method="POST">
-        {% csrf_token %}
         <tr>
         <td>
         <p>{{ column_names.0 }}: {{ card.0 }}</p>
@@ -21,13 +19,9 @@
         <p>{{ column_names.5 }}: {{ card.5 }}</p>
         <p>{{ column_names.6 }}: {{ card.6 }}</p>
         <p>{{ column_names.7 }}: {{ card.7 }}</p>
-        <button type="submit" name= "{{ card.0 }}" value="Not Interested">Not Interested</button>
-        <button type="submit" name= "{{ card.0 }}" value="Applied">Applied</button>
         </td>
         </tr> 
-        </form>  
     {% endfor %}
-    
     </table>
 </div>
 {% endblock %}

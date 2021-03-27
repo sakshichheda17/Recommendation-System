@@ -8,3 +8,6 @@ class CourseRecommendation(models.Model):
     enrolled = models.BooleanField(default=False)
     discontinued = models.BooleanField(default=False)
     completed = models.BooleanField(default=False)
+
+    def __str__(self):
+         return self.user.username + ' ' + str(self.course_index) + ' NI: ' + str(self.not_interested) + ' E: ' + str(self.enrolled)+' D: ' + str(self.discontinued)+' C: ' + str(self.completed)

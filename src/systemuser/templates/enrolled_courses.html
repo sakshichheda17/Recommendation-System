@@ -2,11 +2,12 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <div>
-    <a href="{% url 'applied_jobs' %}">Applied</a>
-    <a href="{% url 'selected_jobs' %}">Selected</a>
-    <h3>Job Recommendations</h3>
+    <a href="{% url 'courses_rec' %}">Recommendations</a>
+    <a href="{% url 'completed_courses' %}">Completed</a>
+    <h3>Enrolled Courses</h3>
+    {{ card }}
     <table class="table">
-    {% for card in job_details %}
+    {% for card in course_details %}
         <form method="POST">
         {% csrf_token %}
         <tr>
@@ -15,19 +16,18 @@
         <p>{{ column_names.1 }}: {{ card.1 }}</p>
         <p>{{ column_names.2 }}: {{ card.2 }}</p>
         <p>{{ column_names.3 }}: {{ card.3 }}</p>
+        <p></p>
         </td>
         <td>
         <p>{{ column_names.4 }}: {{ card.4 }}</p>
         <p>{{ column_names.5 }}: {{ card.5 }}</p>
         <p>{{ column_names.6 }}: {{ card.6 }}</p>
-        <p>{{ column_names.7 }}: {{ card.7 }}</p>
-        <button type="submit" name= "{{ card.0 }}" value="Not Interested">Not Interested</button>
-        <button type="submit" name= "{{ card.0 }}" value="Applied">Applied</button>
+        <button type="submit" name= "{{ card.0 }}" value="Discontinued">Discontinued</button>
+        <button type="submit" name= "{{ card.0 }}" value="Completed">Completed</button>
         </td>
-        </tr> 
+        </tr>   
         </form>  
     {% endfor %}
-    
     </table>
 </div>
 {% endblock %}
