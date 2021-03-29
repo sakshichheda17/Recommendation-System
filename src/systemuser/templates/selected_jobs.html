@@ -1,38 +1,99 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div>
-	<a href="{% url 'jobs_rec' %}">Recommendations</a>
-    <a href="{% url 'applied_jobs' %}">Applied</a>
-    <h3>Selected for Jobs</h3>
-    {% if job_details %}
-        <table class="table">
-        {% for card in job_details %}
-            <tr>
-            <td>
-            <p>{{ column_names.0 }}: {{ card.0 }}</p>
-            <p>{{ column_names.1 }}: {{ card.1 }}</p>
-            <p>{{ column_names.2 }}: {{ card.2 }}</p>
-            <p>{{ column_names.3 }}: {{ card.3 }}</p>
+
+<style>
+.form
+{
+border-radius: 5px;
+background-color: #f2f2f2;
+padding: 20px;
+width:150%;
+margin-left:20px;
+padding-bottom:50px;
+}
+</style>
+
+<div class="form" >
+    <table class="table">
+        <tr>
+            <td width="60%">
+                <div class="w3-content" style="max-width:2000px;"> 
+                <!-- Automatic Slideshow Images -->
+                    <div class="mySlides w3-display-container w3-center">
+                        <img src="https://images.firstpost.com/wp-content/uploads/2020/07/Jobs-640-fastone.jpg?impolicy=website&width=1200&height=800" style="width:100%;height:500px;">
+                        <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small"> 
+                        </div>
+                    </div>
+                    <div class="mySlides w3-display-container w3-center">
+                        <img src="https://images.financialexpress.com/2020/10/jobs-news.jpg" style="width:100%;height:500px;">
+                        <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">  
+                        </div>
+                    </div>
+                    <div class="mySlides w3-display-container w3-center">
+                        <img src="https://akm-img-a-in.tosshub.com/sites/btmt/images/stories/jobs_image_505x264_051119042404.jpg?size=1200:675" style="width:100%;height:500px;">
+                        <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small"> </div>
+                    </div>
+                </div>
             </td>
-            <td>
-            <p>{{ column_names.4 }}: {{ card.4 }}</p>
-            <p>{{ column_names.5 }}: {{ card.5 }}</p>
-            <p>{{ column_names.6 }}: {{ card.6 }}</p>
-            <p>{{ column_names.7 }}: {{ card.7 }}</p>
+            <td width="40%">
+                    <h1 style="text-align:center;">JOB RECOMMENDATION SYSTEM</h1> 
+                       <p style="color:black;text-align:center;">We recommend jobs</p>         
+                    <h5 style="text-align:center;">
+                      <a href="#" class="btn btn-primary btn-sm ">
+                       <p style="text-align:center;"><b>Recommendations</b></p> 
+                       <p> View the jobs recommended for you</p>
+                       <p style="text-align:center;"><b>Applied</b></p> 
+                       <p>View the jobs you have applied</p> 
+                       <p style="text-align:center;"><b>Selected</b></p> 
+                       <p>View the jobs you have selected</p>
+                      </a>                  
+                    </h5>        
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="form" >
+    <h1 style="text-align:center;">JOB RECOMMENDATION SYSTEM</h1> 
+    <p style="color:black;text-align:center;">We recommend jobs</p>
+    <p>.</p>
+    <div>
+         <p style="text-align:center;font-size:150%">
+            <a href="{% url 'jobs_rec' %}" class="btn btn-primary">Recommendations</a>  
+            <a href="{% url 'applied_jobs' %}" class="btn btn-primary">Jobs Applied</a> 
+            <a href="{% url 'selected_jobs' %}" class="btn btn-primary btn-lg">Jobs Selected</a> 
+         </p>
+    <h3 style="text-align:center;">Selected for jobs!</h3>
+    {% if job_details %}        
+        {% for card in job_details %}
+        <div class="card" style="width: 65rem;">    
+        <table class="table">
+        <tr>
+            <td width="50%">
+                  <p><b>{{ column_names.1 }}</b>: {{ card.1 }}</p>
+                  <p><b>{{ column_names.2 }}</b>: {{ card.2 }}</p>
+                  <p><b>{{ column_names.3 }}</b>: {{ card.3 }}</p>
+                  </td>
+            <td width="50%">
+                  <p><b>{{ column_names.4 }}</b>: {{ card.4 }}</p>
+                  <p><b>{{ column_names.5 }}</b>: {{ card.5 }}</p>
+                  <p><b>{{ column_names.6 }}</b>: {{ card.6 }}</p>
+                  <p><b>{{ column_names.7 }}</b>: {{ card.7 }}</p>
             </td>
             </tr> 
-        {% endfor %}
-        </table>
+            </table>
+        </div>  
+        {% endfor %}        
     {% else %}
         Nothing to show here.
     {% endif %}
-</div>
+    </div>
+</div>    
 {% endblock %}
 {% block nav %}
-
-	<a class="nav-item nav-link" href="{% url 'jobs_rec' %}">Jobs</a>
-	<a class="nav-item nav-link" href="{% url 'courses_rec' %}">Courses</a>
-    <a class="nav-item nav-link" href="{% url 'login' %}">Logout</a>
-
+	<a class="navbar-brand nav-item nav-link" href="{% url 'jobs_rec' %}">Jobs</a>
+	<a class="navbar-brand nav-item nav-link" href="{% url 'courses_rec' %}">Courses</a>
+  <a class="navbar-brand nav-item nav-link" href="{% url 'login' %}">Logout</a>
 {% endblock %}
+

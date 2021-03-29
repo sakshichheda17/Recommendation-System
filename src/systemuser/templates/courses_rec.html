@@ -1,39 +1,106 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div>
-    <a href="{% url 'enrolled_courses' %}">Enrolled</a>
-    <a href="{% url 'completed_courses' %}">Completed</a>
-    <h3>Course Recommendations</h3>
+
+<style>
+.form
+{
+border-radius: 5px;
+background-color: #f2f2f2;
+padding: 20px;
+width:135%;
+margin-left:80px;
+padding-bottom:50px;
+}
+</style>
+
+<div class="form" >
     <table class="table">
+        <tr>
+            <td width="60%">
+                <div class="w3-content" style="max-width:2000px;"> 
+                <!-- Automatic Slideshow Images -->
+                    <div class="mySlides w3-display-container w3-center">
+                        <img src="https://mk0digitallearn7ttjx.kinstacdn.com/wp-content/uploads/2019/03/Online-courses-1000x600.jpg" style="width:100%;height:500px;">
+                        <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small"> 
+                        </div>
+                    </div>
+                    <div class="mySlides w3-display-container w3-center">
+                        <img src="https://blog.coursify.me/wp-content/uploads/2018/06/online-courses-with-certificate.jpg " style="width:100%;height:500px;">
+                        <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">  
+                        </div>
+                    </div>
+                    <div class="mySlides w3-display-container w3-center">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPsC2xmAcBVep6V7Ox7W5bscZZzrJ2Z1IPpg&usqp=CAU" style="width:100%;height:500px;">
+                        <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small"> </div>
+                    </div>
+                </div>
+            </td>
+            <td width="40%">
+                    <h1 style="text-align:center;">COURSE RECOMMENDATION SYSTEM</h1> 
+                       <p style="color:black;text-align:center;">We recommend courses</p>                      
+                    <h5 style="text-align:center;">
+                      <a href="#" class="btn btn-primary btn-sm ">
+                        <p style="text-align:center;"><b>Recommendations</b></p> 
+                        <p> View the courses recommended for you</p>
+                        <p style="text-align:center;"><b>Enrolled</b></p> 
+                        <p>View the courses in which you are enrolled</p> 
+                        <p style="text-align:center;"><b>Completed</b></p> 
+                        <p>View the courses you have completed</p>
+                      </a>                  
+                    </h5>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="form" >
+    <div>
+         <p style="text-align:center;font-size:150%">
+            <a href="{% url 'courses_rec' %}" class="btn btn-primary btn-lg">Recommendations</a>  
+            <a href="{% url 'enrolled_courses' %}" class="btn btn-primary">Courses Enrolled </a> 
+            <a href="{% url 'completed_courses' %}" class="btn btn-primary">Courses Completed </a> 
+         </p>
+    <h3 style="text-align:center;">Courses Recommendations</h3>
+    
+   
     {% for card in course_details %}
         <form method="POST">
         {% csrf_token %}
-        <tr>
-        <td>
-        <p>{{ column_names.0 }}: {{ card.0 }}</p>
-        <p>{{ column_names.1 }}: {{ card.1 }}</p>
-        <p>{{ column_names.2 }}: {{ card.2 }}</p>
-        <p>{{ column_names.3 }}: {{ card.3 }}</p>
-        <p></p>
-        </td>
-        <td>
-        <p>{{ column_names.4 }}: {{ card.4 }}</p>
-        <p>{{ column_names.5 }}: {{ card.5 }}</p>
-        <p>{{ column_names.6 }}: {{ card.6 }}</p>
-        <button type="submit" name= "{{ card.0 }}" value="Not Interested">Not Interested</button>
-        <button type="submit" name= "{{ card.0 }}" value="Enrolled">Enrolled</button>
-        </td>
-        </tr>   
+
+        
+        <div class="card" style="width: 59rem;">
+            
+                  <table class="table">
+                  <tr>
+                  <td width="40%">
+                  <p><b>{{ column_names.1 }}</b>: {{ card.1 }}</p>
+                  <p><b>{{ column_names.2 }}</b>: {{ card.2 }}</p>
+                  <p><b>{{ column_names.3 }}</b>: {{ card.3 }}</p>
+                  </td>
+                  <td width="40%">
+                  <p><b>{{ column_names.4 }}</b>: {{ card.4 }}</p>
+                  <p><b>{{ column_names.5 }}</b>: {{ card.5 }}</p>
+                  <p><b>{{ column_names.6 }}</b>: {{ card.6 }}</p>
+                  </td>
+                  <td width="20%">
+                  <p><button class="btn btn-primary" type="submit" name= "{{ card.0 }}" value="Not Interested">Not Interested</button></p>
+                  
+                  <p><button class="btn btn-primary" type="submit" name= "{{ card.0 }}" value="Enrolled">Enrolled</button></p>
+                  </td>
+                  </tr> 
+                  </table>           
+        </div>
         </form>  
+
     {% endfor %}
-    </table>
+    </div>
 </div>
 {% endblock %}
 {% block nav %}
 
-	<a class="nav-item nav-link" href="{% url 'jobs_rec' %}">Jobs</a>
-	<a class="nav-item nav-link" href="{% url 'courses_rec' %}">Courses</a>
-    <a class="nav-item nav-link" href="{% url 'login' %}">Logout</a>
+	<a class="navbar-brand nav-item nav-link" href="{% url 'jobs_rec' %}">Jobs</a>
+	<a class="navbar-brand nav-item nav-link" href="{% url 'courses_rec' %}">Courses</a>
+    <a class="navbar-brand nav-item nav-link" href="{% url 'login' %}">Logout</a>
 
 {% endblock %}

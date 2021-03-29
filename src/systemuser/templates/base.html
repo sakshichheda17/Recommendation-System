@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -17,15 +18,15 @@
     <body>
 
         <header class="site-header">
-          <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+          <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
             <div class="container">
-              <a class="navbar-brand mr-4" href="/">Recommendation System</a>
+              <a style="color:#007bff; font-size:180%;"class="navbar-brand mr-4" href="/"><b>Recommendation System</b></a>
               <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
               </button>
               <div class="collapse navbar-collapse" id="navbarToggle">
                 <div class="navbar-nav mr-auto">
-                  <a class="nav-item nav-link" href="{% url 'user_profile' %}">Home</a>
+                  <a class="navbar-brand nav-item nav-link" href="{% url 'user_profile' %}">Home</a>
                   
                 </div>
                 <!-- Navbar Right Side -->
@@ -86,6 +87,54 @@
         })
       });
     </script>
+    
+     <script>
+// Automatic Slideshow - change image every 4 seconds
+var myIndex = 0;
+carousel();
+
+function carousel() {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";  
+  }
+  myIndex++;
+  if (myIndex > x.length) {myIndex = 1}    
+  x[myIndex-1].style.display = "block";  
+  setTimeout(carousel, 4000);    
+}
+
+</script>
+
+
+<script>
+  $(document).ready(function() {
+      // messages timeout for 10 sec 
+      setTimeout(function() {
+          $('.message').fadeOut('slow');
+      }, 1000); // <-- time in milliseconds, 1000 =  1 sec
+
+      // delete message
+    $('.del-msg').live('click',function(){
+        $('.del-msg').parent().attr('style', 'display:none;');
+    })
+  });
+</script>
+     
+
 
     </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
