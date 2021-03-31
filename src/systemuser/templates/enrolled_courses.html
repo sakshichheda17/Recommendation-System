@@ -32,7 +32,7 @@ padding-bottom:50px;
                         </div>
                     </div>
                     <div class="mySlides w3-display-container w3-center">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPsC2xmAcBVep6V7Ox7W5bscZZzrJ2Z1IPpg&usqp=CAU" style="width:100%;height:500px;">
+                        <img src="https://olc-wordpress-assets.s3.amazonaws.com/uploads/2018/06/INSTRUCTIONAL-DESIGNER-WEBINAR-COURSE-DESIGN-01.png" style="width:100%;height:500px;">
                         <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small"> </div>
                     </div>
                 </div>
@@ -41,14 +41,14 @@ padding-bottom:50px;
                     <h1 style="text-align:center;">COURSE RECOMMENDATION SYSTEM</h1> 
                        <p style="color:black;text-align:center;">We recommend courses</p>                      
                     <h5 style="text-align:center;">
-                      <a href="#" class="btn btn-primary btn-sm ">
+                      
                         <p style="text-align:center;"><b>Recommendations</b></p> 
                         <p> View the courses recommended for you</p>
                         <p style="text-align:center;"><b>Enrolled</b></p> 
                         <p>View the courses in which you are enrolled</p> 
                         <p style="text-align:center;"><b>Completed</b></p> 
                         <p>View the courses you have completed</p>
-                      </a>                  
+                                       
                     </h5>               
             </td>
         </tr>
@@ -107,4 +107,8 @@ padding-bottom:50px;
 	<a class="navbar-brand nav-item nav-link" href="{% url 'courses_rec' %}">Courses</a>
     <a class="navbar-brand nav-item nav-link" href="{% url 'login' %}">Logout</a>
 
+{% endblock %}
+
+{% block navhome %}
+<a class="navbar-brand nav-item nav-link" href="{% url 'user_profile' %}">Home</a>
 {% endblock %}

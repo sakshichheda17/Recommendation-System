@@ -246,7 +246,7 @@ def user_profile(request):
 				extraction(True,username,resume_url)
 
 			
-			messages.success(request, f'Your details were edited successfully.')
+			messages.success(request, f'Your changes have been saved sucessfully.')
 			return redirect("user_profile") 
 		else:
 			print(form.errors)

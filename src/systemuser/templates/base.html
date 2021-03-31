@@ -18,15 +18,16 @@
     <body>
 
         <header class="site-header">
-          <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
+          <nav class="navbar navbar-expand-md fixed-top" style="background-color: #dddddd;">
             <div class="container">
-              <a style="color:#007bff; font-size:180%;"class="navbar-brand mr-4" href="/"><b>Recommendation System</b></a>
+              <b style="color:#007bff; font-size:180%;"class="navbar-brand mr-4">Recommendation System</b>
               <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
               </button>
               <div class="collapse navbar-collapse" id="navbarToggle">
                 <div class="navbar-nav mr-auto">
-                  <a class="navbar-brand nav-item nav-link" href="{% url 'user_profile' %}">Home</a>
+                  {% block navhome %}
+                  {% endblock %}
                   
                 </div>
                 <!-- Navbar Right Side -->
@@ -43,14 +44,15 @@
 
         <main role="main" class="container">
           <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 {% if messages %}
                     {% for message in messages %}
                         <div class="alert alert-{{ message.tags }} message"> {{ message }} {% block redirect %}{% endblock %}</div>
                     {% endfor %}
-                {% endif %}
-                {% block content %}{% endblock %}
-                
+                {% endif %}    
+            </div>
+            <div class="col-md-8">
+              {% block content %}{% endblock %}
             </div>
             <!-- <div class="col-md-4">
               <div class="content-section">
